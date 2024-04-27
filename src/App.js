@@ -33,7 +33,7 @@ class App extends Component {
       completed: false,
     };
 
-    this.setState(prevState => ({ todos: [...prevState.todos, todo] }));
+    this.setState(prevState => ({ todos: [todo, ...prevState.todos] }));
   };
 
   changeFilter = event => {
