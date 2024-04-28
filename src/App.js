@@ -3,13 +3,21 @@ import './styles/base.scss';
 import TodoList from 'components/TodoList/TodoList';
 import TodoEditor from 'components/TodoEditor/TodoEditor';
 import Filter from 'components/TodoFilter/TodoFilter';
-import initialTodos from '../src/todos.json';
+// import initialTodos from '../src/todos.json';
 import { nanoid } from 'nanoid';
+import Modal from 'components/Modal/Modal';
 
 class App extends Component {
   state = {
-    todos: initialTodos,
+    todos: [],
     filter: '',
+    showModal: false,
+  };
+
+  toggleModal = () => {
+    this.setState(({ showModal }) => ({
+      showModal: !showModal,
+    }));
   };
 
   deleteTodo = todoId => {
@@ -40,7 +48,30 @@ class App extends Component {
     this.setState({ filter: event.currentTarget.value });
   };
 
+  componentDidMount() {
+    console.log('App componentDidMount');
+
+    const todos = localStorage.getItem('todos');
+    const parsedTodos = JSON.parse(todos);
+
+    if (parsedTodos) {
+      this.setState({ todos: parsedTodos });
+    }
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    console.log('App componentDidUpdate');
+
+    if (this.state.todos !== prevState.todos) {
+      console.log('Оновилося поле todos, записую todos в сховище!');
+
+      localStorage.setItem('todos', JSON.stringify(this.state.todos));
+    }
+  }
+
   render() {
+    console.log('App render');
+
     const { todos, filter } = this.state;
 
     const completedTodoCount = todos.reduce(
@@ -59,6 +90,7 @@ class App extends Component {
           <p>Загальна кількість todo'шек: {todos.length}</p>
           <p>Кількість виконаних todo'шек: {completedTodoCount}</p>
         </div>
+        <Modal />
         <TodoEditor onSubmit={this.addTodo} />
         <Filter value={filter} onChange={this.changeFilter} />
         <TodoList
