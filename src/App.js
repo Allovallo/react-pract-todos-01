@@ -3,13 +3,13 @@ import './styles/base.scss';
 import TodoList from 'components/TodoList/TodoList';
 import TodoEditor from 'components/TodoEditor/TodoEditor';
 import Filter from 'components/TodoFilter/TodoFilter';
-// import initialTodos from '../src/todos.json';
+import initialTodos from '../src/todos.json';
 import { nanoid } from 'nanoid';
 import Modal from 'components/Modal/Modal';
 
 class App extends Component {
   state = {
-    todos: [],
+    todos: initialTodos,
     filter: '',
     showModal: false,
   };
@@ -95,7 +95,7 @@ class App extends Component {
         </button>
 
         {showModal && (
-          <Modal>
+          <Modal onClose={this.toggleModal}>
             <h1>Привіт, це контент модалки як children</h1>
             <p>
               text text text text text text text text text text text text text text text text text
