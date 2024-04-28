@@ -14,11 +14,26 @@ class App extends Component {
     showModal: false,
   };
 
-  toggleModal = () => {
-    this.setState(({ showModal }) => ({
-      showModal: !showModal,
-    }));
-  };
+  componentDidMount() {
+    console.log('App componentDidMount');
+
+    const todos = localStorage.getItem('todos');
+    const parsedTodos = JSON.parse(todos);
+
+    if (parsedTodos) {
+      this.setState({ todos: parsedTodos });
+    }
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    console.log('App componentDidUpdate');
+
+    if (this.state.todos !== prevState.todos) {
+      console.log('Оновилося поле todos, записую todos в сховище!');
+
+      localStorage.setItem('todos', JSON.stringify(this.state.todos));
+    }
+  }
 
   deleteTodo = todoId => {
     this.setState(prevState => ({ todos: prevState.todos.filter(todo => todo.id !== todoId) }));
@@ -48,31 +63,16 @@ class App extends Component {
     this.setState({ filter: event.currentTarget.value });
   };
 
-  componentDidMount() {
-    console.log('App componentDidMount');
-
-    const todos = localStorage.getItem('todos');
-    const parsedTodos = JSON.parse(todos);
-
-    if (parsedTodos) {
-      this.setState({ todos: parsedTodos });
-    }
-  }
-
-  componentDidUpdate(prevProps, prevState) {
-    console.log('App componentDidUpdate');
-
-    if (this.state.todos !== prevState.todos) {
-      console.log('Оновилося поле todos, записую todos в сховище!');
-
-      localStorage.setItem('todos', JSON.stringify(this.state.todos));
-    }
-  }
+  toggleModal = () => {
+    this.setState(({ showModal }) => ({
+      showModal: !showModal,
+    }));
+  };
 
   render() {
     console.log('App render');
 
-    const { todos, filter } = this.state;
+    const { todos, filter, showModal } = this.state;
 
     const completedTodoCount = todos.reduce(
       (total, todo) => (todo.completed ? total + 1 : total),
@@ -90,7 +90,24 @@ class App extends Component {
           <p>Загальна кількість todo'шек: {todos.length}</p>
           <p>Кількість виконаних todo'шек: {completedTodoCount}</p>
         </div>
-        <Modal />
+        <button type="button" onClick={this.toggleModal}>
+          Відкрити модалку
+        </button>
+
+        {showModal && (
+          <Modal>
+            <h1>Привіт, це контент модалки як children</h1>
+            <p>
+              text text text text text text text text text text text text text text text text text
+              text text text text text text text text text text text text text text text text text
+              text text text text text text text text
+            </p>
+            <button type="button" onClick={this.toggleModal}>
+              Закрити
+            </button>
+          </Modal>
+        )}
+
         <TodoEditor onSubmit={this.addTodo} />
         <Filter value={filter} onChange={this.changeFilter} />
         <TodoList
