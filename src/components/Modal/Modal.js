@@ -28,8 +28,12 @@ export default class Modal extends Component {
   handleBackdropClick = event => {
     console.log('Клікнули в бекдроп!!!');
 
-    console.log(event.currentTarger);
-    console.log(event.target);
+    console.log('currentTarget:', event.currentTarget);
+    console.log('target', event.target);
+
+    if (event.currentTarget === event.target) {
+      this.props.onClose();
+    }
   };
 
   render() {
