@@ -6,6 +6,9 @@ import Filter from 'components/TodoFilter/TodoFilter';
 import initialTodos from '../src/todos.json';
 import { nanoid } from 'nanoid';
 import Modal from 'components/Modal/Modal';
+import Clock from 'components/Clock/Clock';
+import Tabs from 'components/Tabs/Tabs';
+import tabs from '../src/tabs.json';
 
 class App extends Component {
   state = {
@@ -69,25 +72,37 @@ class App extends Component {
     }));
   };
 
+  calculatedCompletedTodos = () => {
+    const { todos } = this.state;
+    return todos.reduce((total, todo) => (todo.completed ? total + 1 : total), 0);
+  };
+
+  visibleTodos = () => {
+    const { filter, todos } = this.state;
+    const normalizedFilter = filter.toLowerCase();
+
+    return todos.filter(todo => todo.text.toLowerCase().includes(normalizedFilter));
+  };
+
   render() {
-    console.log('App render');
-
     const { todos, filter, showModal } = this.state;
-
-    const completedTodoCount = todos.reduce(
-      (total, todo) => (todo.completed ? total + 1 : total),
-      0
-    );
-
-    const visibleTodos = this.state.todos.filter(todo =>
-      todo.text.toLowerCase().includes(this.state.filter.toLowerCase())
-    );
+    const totalTodoCount = todos.length;
+    const completedTodoCount = this.calculatedCompletedTodos();
+    const visibleTodos = this.visibleTodos();
 
     return (
       <div>
+        <Clock />
+
+        <Tabs items={tabs}></Tabs>
+        {/* {showModal && <Clock />} */}
+        {/* <button type="button" onClick={this.toggleModal}>
+          Відкрити/Закрити таймер
+        </button> */}
+
         <h1>Перелік завдань</h1>
         <div>
-          <p>Загальна кількість todo'шек: {todos.length}</p>
+          <p>Загальна кількість todo'шек: {totalTodoCount}</p>
           <p>Кількість виконаних todo'шек: {completedTodoCount}</p>
         </div>
         <button type="button" onClick={this.toggleModal}>
