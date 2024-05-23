@@ -31,13 +31,18 @@ class App extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    console.log('App componentDidUpdate');
+    const nextTodos = this.state.todos;
+    const prevTodos = prevState.todos;
 
-    if (this.state.todos !== prevState.todos) {
+    if (nextTodos !== prevTodos) {
       console.log('Оновилося поле todos, записую todos в сховище!');
 
-      localStorage.setItem('todos', JSON.stringify(this.state.todos));
+      localStorage.setItem('todos', JSON.stringify(nextTodos));
     }
+
+    // if (nextTodos.length > prevTodos.length && prevTodos.length !== 0) {
+    //   this.toggleModal();
+    // }
   }
 
   deleteTodo = todoId => {
@@ -62,6 +67,7 @@ class App extends Component {
     };
 
     this.setState(prevState => ({ todos: [todo, ...prevState.todos] }));
+    this.toggleModal();
   };
 
   changeFilter = event => {
@@ -96,7 +102,7 @@ class App extends Component {
       <div>
         <Clock />
 
-        <IconButton onClick={this.toggleModal}>
+        <IconButton onClick={this.toggleModal} aria-label="Додати todo">
           <AddIcon width="40" height="40"></AddIcon>
         </IconButton>
 
@@ -117,19 +123,10 @@ class App extends Component {
 
         {showModal && (
           <Modal onClose={this.toggleModal}>
-            <h1>Привіт, це контент модалки як children</h1>
-            <p>
-              text text text text text text text text text text text text text text text text text
-              text text text text text text text text text text text text text text text text text
-              text text text text text text text text
-            </p>
-            <button type="button" onClick={this.toggleModal}>
-              Закрити
-            </button>
+            <TodoEditor onSubmit={this.addTodo} />
           </Modal>
         )}
 
-        <TodoEditor onSubmit={this.addTodo} />
         <Filter value={filter} onChange={this.changeFilter} />
         <TodoList
           todos={visibleTodos}
