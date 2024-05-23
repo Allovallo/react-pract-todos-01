@@ -9,6 +9,8 @@ import Modal from 'components/Modal/Modal';
 import Clock from 'components/Clock/Clock';
 import Tabs from 'components/Tabs/Tabs';
 import tabs from '../src/tabs.json';
+import IconButton from 'components/IconButton/IconButton';
+import { ReactComponent as AddIcon } from './icons/add.svg';
 
 class App extends Component {
   state = {
@@ -94,6 +96,10 @@ class App extends Component {
       <div>
         <Clock />
 
+        <IconButton onClick={this.toggleModal}>
+          <AddIcon width="40" height="40"></AddIcon>
+        </IconButton>
+
         <Tabs items={tabs}></Tabs>
         {/* {showModal && <Clock />} */}
         {/* <button type="button" onClick={this.toggleModal}>
@@ -105,9 +111,9 @@ class App extends Component {
           <p>Загальна кількість todo'шек: {totalTodoCount}</p>
           <p>Кількість виконаних todo'шек: {completedTodoCount}</p>
         </div>
-        <button type="button" onClick={this.toggleModal}>
+        {/* <button type="button" onClick={this.toggleModal}>
           Відкрити модалку
-        </button>
+        </button> */}
 
         {showModal && (
           <Modal onClose={this.toggleModal}>
